@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [[ -d ~/.config/vetch ]]; then
+	if [[ -e ~/.config/vetch/config ]]; then
+		. ~/.config/vetch/config
+	else
+		touch ~/.config/vetch/config
+		img=1
+	fi
+else
+	mkdir ~/.config/vetch
+	touch ~/.config/vetch/config
+	img=1
+fi
+
+
+drawImg() {
+	viu -w 13 -h 6 $imgpath
+}
+
+drawStats() {
+	clear
+	user=$(whoami)
+	host=$(uname -n)
+	sh=$(which $SHELL | awk -F '/' '{print $NF}')
+	os=$(cat /etc/os-release | awk -F '=' 'FNR == 3 {print $2}')
+	wm=$(wmctrl -m | awk -F ': ' 'FNR == 1 {print $2}')
+
+	echo ""
+	
+	printf "\033[1m"
+
+	printf " $user@$host            "
+	printf "\033[22m"
+	if [[ $img -eq 0 ]]; then
+		drawImg
+	fi
+	printf "\033[3;1H"
+	printf "\033[3m"
+	printf "\033[33m
+
+ sh\033[37m    $sh\033[32m
+ os\033[37m    $os\033[35m
+ wm\033[37m    $wm\033[0m
+	"
+	echo ""
+}
+
+
+drawStats
